@@ -1,0 +1,10 @@
+[Unit]
+Description=upload
+After=network-online.target
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/upload
+
+[Install]
+WantedBy=multi-user.target
