@@ -3,7 +3,8 @@ Description=upload
 After=network-online.target
 
 [Service]
-User=root
+User=caddy
+Group=caddy
 ExecStart=/usr/local/bin/upload
 
 [Install]
