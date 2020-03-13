@@ -42,6 +42,8 @@
   var upload = new Dropzone("#upload", { 
     url: "/upload",
     paramName: "uploadfile",
+    maxFilesize: 100, 
+    timeout: 190000,
     dictDefaultMessage: "拖拽文件或点击长传"
   });
 </script>
