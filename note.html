@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <title>notepad</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <style type="text/css">
+            html, body {
+                margin: 0px;
+                width: 100%;
+                height: 100%;
+            }
+            body {
+                background-color: #444444;
+                caret-color: #E91E63;
+                overflow:hidden;
+            }
+            #save_fab {
+                z-index: 99;
+                display: block;
+                position: fixed;
+                width: 56px;
+                height: 56px;
+                bottom: 24px;
+                right: 24px;
+                background-color: #E91E63;
+                border-radius: 50%;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
+            #save_fab:hover {
+                cursor: pointer;
+            }
+            #save_fab:focus {
+                outline:none !important;
+            }
+            #save_fab:active {
+                background-color: #b40c45;
+                outline:none !important;
+            }
+	    .container {
+		    position: absolute;
+		    top: 20px;
+		    right: 20px;
+		    bottom: 20px;
+		    left: 20px;
+	    }
+	    #content {
+		    font-size: 100%;
+		    margin: 0;
+		    padding: 20px;
+		    overflow-y: auto;
+		    color: #fff;
+		    resize: none;
+		    width: 100%;
+		    height: 100%;
+		    background-color: #303030;
+		    min-height: 100%;
+		    -webkit-box-sizing: border-box;
+		    -moz-box-sizing: border-box;
+		    box-sizing: border-box;
+		    border: 1px #ddd solid;
+		    outline: none;
+	    }
+    </style>
+</head>
+<body>
+<div>
+    <form action="/note" method="post" id="save">
+	    <div id="save_fab">
+		    <input type="submit" id="save_fab" value="save"/>
+	    </div>
+    </form>
+    <div class="container" form="save">
+	    <textarea id="content" name="note" form="save">{{.Note}}</textarea>
+    </div>
+</div>
+</body>
+</html>
