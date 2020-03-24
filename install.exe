@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+if [ ! -f install ]; then
+    echo 'install must be run within its container folder' 1>&2
+    exit 1
+fi
+
+CURDIR=`pwd`
+OLDGOPATH="$GOPATH"
+export GOPATH="$CURDIR"
+
+OLDGOOS="$GOOS"
+export GOOS="windows"
+
+OLDCGO_ENABLED="$GOPATH"
+export CGO_ENABLED="0"
+
+gofmt -w src
+
+go install upload
+
+export GOPATH="$OLDGOPATH"
+export CGO_ENABLED="$OLDCGO_ENABLED"
+export GOOS="$OLDGOOS"
+
+echo 'finished'

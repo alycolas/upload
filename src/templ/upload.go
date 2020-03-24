@@ -1,4 +1,6 @@
-<html>
+package templ
+
+const UploadTemp = `<html>
 <head>
     <title>上传文件</title>
     <script src="https://cdn.jsdelivr.net/npm/dropzone@5.7.0/dist/dropzone.js"></script>
@@ -36,7 +38,7 @@
 </div>
 </form>
 <div>
-<a href="/file/upload">查看文件</a>
+<a href="https://alycolas.pw/file/upload">查看文件</a>
 </div>
 <script>
   var upload = new Dropzone("#upload", { 
@@ -48,4 +50,4 @@
   });
 </script>
 </body>
-</html>
+</html>`

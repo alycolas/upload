@@ -1,7 +1,9 @@
-# http upload tool write by golang
+# http upload and web notepad tool write by golang
 
-upload dir  "/var/www/file/upload"
+  -l 指定监听地址 (default "127.0.0.1")
 
-port 9090
+  -n 指定 note 文件 (default "/var/www/note.db")
 
-listen 127.0.0.1
+  -p 指定端口 (default "9090")
+
+  -u 指定上传目录 (default "/var/www/file/upload/")

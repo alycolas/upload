@@ -1,24 +1,34 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
-	"os"
-	"time"
-	"strconv"
-	"html/template"
-	"crypto/md5"
 	"net/http"
-//	"strings"
+	"os"
+	"strconv"
+	"time"
+	//"strings"
+	"flag"
 	"log"
+	"templ"
 )
 
-const (
-	noteTMPL =  "note.html"
-	uploadTMPL = "upload.gtpl"
-	noteFile = "1.db"
+var (
+	noteFile  string
+	uploadDir string
+	local     string
+	port      string
 )
+
+func init() {
+	flag.StringVar(&noteFile, "n", "/var/www/note.db", "指定 note 文件")
+	flag.StringVar(&uploadDir, "u", "/var/www/file/upload/", "指定上传目录")
+	flag.StringVar(&local, "l", "127.0.0.1", "指定监听地址")
+	flag.StringVar(&port, "p", "9090", "指定端口")
+}
 
 // func sayhelloName(w http.ResponseWriter, r *http.Request) {
 // 	r.ParseForm()
@@ -33,24 +43,21 @@ const (
 // 	fmt.Fprintf(w, "Hello World!") // 这个写入到 w 的是输出到客户端的
 // }
 
-// 处理 /note 
+// 处理 /note
 func note(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method:", r.Method)
 	if r.Method == "GET" {
-//		crutime := time.Now().Unix()
-//		h := md5.New()
-//		io.WriteString(h, strconv.FormatInt(crutime, 10))
-//		token := fmt.Sprintf("%x", h.Sum(nil))
 		note, _ := ioutil.ReadFile(noteFile)
-		t, _ := template.ParseFiles("noteTMPL")
-		t.Execute(w, note)
-	} else {
-		newNote = r.FormValue("note")
-		err := ioutil.WriteFile(noteFile, []byte(newNote), 0666)
-		if err != nil {
-			fmt.Println("can not update note")
-			return
-		}
+		t, _ := template.New("note").Parse(templ.NoteTemp)
+		t.Execute(w, string(note))
+	}
+}
+func save(w http.ResponseWriter, r *http.Request) {
+	newNote := r.FormValue("note")
+	err := ioutil.WriteFile(noteFile, []byte(newNote), 0666)
+	if err != nil {
+		fmt.Println("can not update note")
+		return
 	}
 }
 
@@ -63,7 +70,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(h, strconv.FormatInt(crutime, 10))
 		token := fmt.Sprintf("%x", h.Sum(nil))
 
-		t, _ := template.ParseFiles("uploadTMPL")
+		t, _ := template.New("upload").Parse(templ.UploadTemp)
 		t.Execute(w, token)
 	} else {
 		r.ParseMultipartForm(32 << 20)
@@ -74,7 +81,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 		fmt.Fprintf(w, "%v", handler.Header)
-		f, err := os.OpenFile("/var/www/file/upload/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+		f, err := os.OpenFile(uploadDir+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -85,12 +92,13 @@ func upload(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-//	http.HandleFunc("/", sayhelloName)
+	flag.Parse()
+	//	http.HandleFunc("/", sayhelloName)
 	http.HandleFunc("/upload", upload)
-	http.HandleFunc("/note", note)
-	err := http.ListenAndServe("127.0.0.1:9090", nil) // 设置监听的端口
+	http.HandleFunc("/", note)
+	http.HandleFunc("/save", save)
+	err := http.ListenAndServe(local+":"+port, nil) // 设置监听的端口
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-
 }
